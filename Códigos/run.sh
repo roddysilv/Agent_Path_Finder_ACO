@@ -1,3 +1,3 @@
 g++ -o ACO ACO.cpp
-./ACO 100 200 1 0 0.3 20 "../Instâncias/M_10x10.txt"
+./ACO 50 200 0.5 0.8 0.6 20 "../Instâncias/Mapas/M_30x30B2.txt" "../Instâncias/Tour/10 buscas/Tour_M_30x30B2.txt"
 python3 PlotACO.py

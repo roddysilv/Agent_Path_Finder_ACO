@@ -137,9 +137,7 @@ float distancia(int x, int y)
 
 void iniciaFer()
 {
-
     vector<float> aux;
-
     for(int i =0; i<w; i++)
     {
         aux.push_back(0.1);

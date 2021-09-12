@@ -23,11 +23,14 @@ def plot(C,G,h,w,ij):
         if C[j][2] == 1:
             # plt.annotate(C[j],(x[j],y[j]),color='r')
             plt.plot(x[j],y[j],'go')
+        if j == 0:
+            # plt.annotate(C[j],(x[j],y[j]),color='r')
+            plt.plot(x[j],y[j],'bo')
             
     x=np.array(x)
     y=np.array(y)        
     
-    # plt.quiver(x[:-1], y[:-1], x[1:]-x[:-1], y[1:]-y[:-1], scale_units='xy', angles='xy', scale=1)
+    plt.quiver(x[:-1], y[:-1], x[1:]-x[:-1], y[1:]-y[:-1], scale_units='xy', angles='xy', scale=1)
     
     #G = instancia(n)
     
@@ -35,9 +38,11 @@ def plot(C,G,h,w,ij):
         for j in range(w):
             if G[i][j] == "T":
                 plt.plot(i,j,'ro')
+                
+    plt.axis('off')
     
-    plt.savefig(f"../Imagens/G{h}x{w}_Obj{len(obj)}_{ij+1}.svg",bbox_inches='tight')
-    plt.savefig(f"../Imagens/G{h}x{w}_Obj{len(obj)}_{ij+1}png",bbox_inches='tight',dpi=400)
+    plt.savefig(f"../Imagens/G{h}x{w}_{ij+1}.svg",bbox_inches='tight')
+    plt.savefig(f"../Imagens/G{h}x{w}_{ij+1}png",bbox_inches='tight',dpi=600)
 
 
 def abreInstancia(instancia):
@@ -89,8 +94,8 @@ for i in range(10):
 
     if instancia != -1:
 
-        G, h, w = abreInstancia(instancia,i)
+        G, h, w = abreInstancia(instancia)
 
         print("Plotando Caminho")
-        plot(caminho,G,h,w)
+        plot(caminho,G,h,w,i)
         print("Imagem salva em: Imagens/test.png")
