@@ -37,12 +37,12 @@ def plot(C,G,h,w):
                 plt.plot(i,j,'ro')
     
     # plt.savefig(f"../Imagens/G{h}x{w}_Obj{len(obj)}.svg",bbox_inches='tight')
-    plt.savefig("test.png",bbox_inches='tight',dpi=400)
+    plt.savefig("../Imagens/test.png",bbox_inches='tight',dpi=400)
 
 
-def abreInstancia(ins):
+def abreInstancia(instancia):
     
-    f = open(ins)
+    f = open(instancia)
     
     f = f.readlines()
     
@@ -79,4 +79,6 @@ instancia, caminho = openResult()
 
 G, h, w = abreInstancia(instancia)
 
+print("Plotando Caminho")
 plot(caminho,G,h,w)
+print("Imagem salva em: Imagens/test.png")

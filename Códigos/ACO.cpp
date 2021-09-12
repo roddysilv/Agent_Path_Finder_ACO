@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <cmath>
 #include <algorithm>
+#include <sstream>
 
 using namespace std;
 
@@ -13,6 +14,8 @@ int formigas, iteracoes,h,w;
 float alpha, beta, rho, C;
 
 pair<int,int> inicio;
+
+vector<vector<pair<int,int>>> Tour;
 
 vector<pair<int,int>> objetivos;
 
@@ -79,6 +82,30 @@ void reiniciaInstancia()
     }
 }
 
+void leTour(string tour)
+{
+    vector<pair<int,int>> v;
+    pair<int,int> no;
+    string s;
+    ifstream file;
+    file.open(tour);
+    file>>s;
+    int t = stoi(s);
+    for(int i = 0; i < 10  ; i++)
+    {
+        for(int j = 0; j < t  ; j++)
+        {
+            file>>s;
+            no.first = stoi(s);
+            file>>s;
+            no.second = stoi(s);
+            v.push_back(no);
+        }
+        Tour.push_back(v);
+        v.clear();
+    }
+}
+
 int calculaDistancia(int x1, int y1, int x2, int y2)
 {
     return abs(x1-x2) + abs(y1-y2);
@@ -137,40 +164,30 @@ void diminuiFer()
 
 void atualizaFerormonio()
 {
+    sort(caminhos.begin(), caminhos.end(), [](const vector<pair<int,int>> & a, const vector<pair<int,int>> & b)
+    {
+        return a.size() < b.size();
+    });
+
+    float ficha = C;
+
     for(int i =0; i<caminhos.size(); i++)
     {
-        for(int j =0; j<caminhos[i].size()-1; j++)
+        if(ficha>0)
         {
-            int x = caminhos[i][j].first;
-            int y = caminhos[i][j].second;
-            int x_n = caminhos[i][j+1].first;
-            int y_n = caminhos[i][j+1].second;
-            T[Pontos[x][y]][Pontos[x_n][y_n]] += C;
-        }
-    }
-}
-
-void grid(int h, int w)
-{
-
-    vector<char> aux;
-
-    for(int i =0; i<w+2; i++)
-    {
-        aux.push_back('.');
-    }
-    for(int j =0; j<h+2; j++)
-    {
-        G.push_back(aux);
-    }
-    for(int i =0; i<w+2; i++)
-    {
-        for(int j =0; j<h+2; j++)
-        {
-            if(i == 0 || i==h+1 || j==0 || j==w+1)
+            for(int j =0; j<caminhos[i].size()-1; j++)
             {
-                G[i][j]='T';
+                int x = caminhos[i][j].first;
+                int y = caminhos[i][j].second;
+                int x_n = caminhos[i][j+1].first;
+                int y_n = caminhos[i][j+1].second;
+                T[Pontos[x][y]][Pontos[x_n][y_n]] += ficha;
             }
+            ficha -= 2;
+        }
+        else
+        {
+            break;
         }
     }
 }
@@ -321,9 +338,10 @@ vector<pair<int,int>> ACO(string instancia)
     return best;
 }
 
-void save(vector<pair<int,int>> c, string instancia)
+void save(vector<pair<int,int>> c, string instancia,int i)
 {
     ofstream file;
+    string result = "Resultados" + to_string(i) + ".txt";
     file.open("Resultados.csv");
     file << instancia << ",0,0"<<endl;
     for(int i =0; i< c.size(); i++)
@@ -340,6 +358,11 @@ void save(vector<pair<int,int>> c, string instancia)
     file.close();
 }
 
+void conflitos()
+{
+
+}
+
 int main(int argc, char *argv[])
 {
     formigas = atoi(argv[1]);
@@ -354,35 +377,41 @@ int main(int argc, char *argv[])
 
     C = atof(argv[6]);
 
-    string instancia = argv[7]; //"../Instâncias/M_20x20.txt";
+    string instancia = argv[7];
 
-    inicio.first = 1;
-    inicio.second = 1;
+    string Tour_x = argv[8];
 
-    pair<int,int> t;
-    t.first = 5;
-    t.second = 5;
-    objetivos.push_back(t);
+    vector<vector<pair<int,int>>> c;
 
-    t.first = 10;
-    t.second = 18;
-    objetivos.push_back(t);
+    leTour(Tour_x);
 
-    vector<pair<int,int>> c = ACO(instancia);
+    for(int i =0; i < 10; i++)
+    {
+        objetivos = Tour[i];
+
+        inicio.first = objetivos[0].first;
+        inicio.second = objetivos[0].second;
+
+        objetivos.erase(remove(objetivos.begin(), objetivos.end(), inicio), objetivos.end());
+
+        c.push_back(ACO(instancia));
+
+        objetivos.clear();
+    }
 
     cout<<endl;
-
-    if(c.size()>0){
-        cout<<"Execução Terminada!"<<endl<<endl;
-        save(c,instancia);
+    for(int i =0; i < 10; i++)
+    {
+        if(c[i].size()>0)
+        {
+            cout<<"Execução Terminada!"<<endl<<endl;
+            save(c[i],instancia,i);
+        }
+        else
+        {
+            cout << "Não foram encontradas rotas!"<<endl<<endl;
+        }
     }
-    else{
-        cout << "Não foram encontradas rotas!"<<endl<<endl;
-    }
-
-    cout<<alpha<<" "<<beta<<" "<<rho<<" "<<C<<" "<<endl;
-    
-//cout<<distancia(1,1)<<" "<<calculaDistancia(1,1,5,5);
 
     return 0;
 }
