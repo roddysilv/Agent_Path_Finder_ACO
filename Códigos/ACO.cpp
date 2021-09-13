@@ -135,6 +135,75 @@ float distancia(int x, int y)
     }
 }
 
+void tc(vector<pair<int,int>> A,int a, vector<pair<int,int>> B,int b)
+{
+
+    int m = min(A.size(), B.size());
+
+    for(int i = 0; i< m; i++)
+    {
+        if(A[i] == B[i])
+        {
+            if(A[i+1] == B[i-1] || A[i-1] == B[i+1])
+            {
+                if(A[i].first == A[i-1].first ||A[i].first == A[i+1].first)
+                {
+                    pair<int,int> no = A[i-1];
+                    no.second += 1;
+                    A.insert(i,A[i-1]);
+                    A.insert(i,no);
+                    A.insert(i,A[i-1]);
+                }
+                else if(A[i].second == A[i-1].second ||A[i].second == A[i+1].second)
+                {
+                    pair<int,int> no = A[i-1];
+                    no.first += 1;
+                    A.insert(i,A[i-1]);
+                    A.insert(i,no);
+                    A.insert(i,A[i-1]);
+                }
+            }
+            else
+            {
+                int r = rand() % 2;
+                if(r == 0)
+                {
+                    A.insert(i,A[i-1]);
+                }
+                else
+                {
+                    B.insert(i,B[i-1]);
+                }
+            }
+        }
+        else if(A[i] == B[i-1] || B[i]==A[i-1])
+        {
+            int r = rand() % 2;
+            if(r == 0)
+            {
+                A.insert(i,A[i-1]);
+            }
+            else
+            {
+                B.insert(i,B[i-1]);
+            }
+        }
+    }
+    ofstream file;
+    string result = "Resultados/tc" + to_string(a) + "_" + to_string(b)+ ".csv";
+    file.open(result);
+    for(int i =0; i< A.size(); i++)
+    {
+        file << A[i].first << "," << A[i].second << endl;
+    }
+    file << endl ;
+    for(int i =0; i< B.size(); i++)
+    {
+        file << B[i].first << "," << B[i].second << endl;
+    }
+    file.close();
+}
+
 void iniciaFer()
 {
     vector<float> aux;
@@ -250,7 +319,7 @@ pair<int,int> selecionaNo(pair<int,int> no)
             select.push_back(i);
         }
     }
-    srand((int) time(0));
+    srand(time(0));
     int RandIndex = select[rand() % select.size()];
 
     pair<int,int> y;
@@ -355,11 +424,6 @@ void save(vector<pair<int,int>> c, string instancia,int i)
     file.close();
 }
 
-void conflitos()
-{
-
-}
-
 int main(int argc, char *argv[])
 {
     formigas = 20;
@@ -437,6 +501,10 @@ int main(int argc, char *argv[])
 
     cout<<"Tempo total: "<<elapsedT.count() * 1e-9<<" seg" <<endl;
 
+    /*for(int i =0; i < 9; i++)
+    {
+        tc(c[i],i,c[i+1],i+1);
+    }*/
 
     return 0;
 }
