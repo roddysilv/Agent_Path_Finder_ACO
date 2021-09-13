@@ -127,7 +127,7 @@ float distancia(int x, int y)
     }
     if (min == 0)
     {
-        return 1;
+        return 1.0;
     }
     else
     {
@@ -250,7 +250,7 @@ pair<int,int> selecionaNo(pair<int,int> no)
             select.push_back(i);
         }
     }
-
+    srand((int) time(0));
     int RandIndex = select[rand() % select.size()];
 
     pair<int,int> y;
@@ -427,6 +427,10 @@ int main(int argc, char *argv[])
         }
 
         objetivos.clear();
+        G.clear();
+        T.clear();
+        Pontos.clear();
+        caminhos.clear();
     }
     auto endT = chrono::high_resolution_clock::now();
     auto elapsedT = chrono::duration_cast<std::chrono::nanoseconds>(endT - beginT);
