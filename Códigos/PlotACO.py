@@ -42,7 +42,7 @@ def plot(C,G,h,w,ij):
     plt.axis('off')
     
     plt.savefig(f"../Imagens/G{h}x{w}_{ij+1}.svg",bbox_inches='tight')
-    plt.savefig(f"../Imagens/G{h}x{w}_{ij+1}png",bbox_inches='tight',dpi=600)
+    plt.savefig(f"../Imagens/G{h}x{w}_{ij+1}.png",bbox_inches='tight',dpi=600)
 
 
 def abreInstancia(instancia):
@@ -98,4 +98,4 @@ for i in range(10):
 
         print("Plotando Caminho")
         plot(caminho,G,h,w,i)
-        print("Imagem salva em: Imagens/test.png")
+        print(f"Imagem salva em: Imagens/G{h}x{w}_{i+1}.png")
