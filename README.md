@@ -1,4 +1,4 @@
-# Agent_Path_Finder_ACO
+# Agent Path Finder - ACO
 Trabalho de Inteligência Computacional
 
 ## Dependências
