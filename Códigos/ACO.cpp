@@ -45,7 +45,6 @@ void iniciaPontos()
 
 void leInstancia(string instancia)
 {
-
     string s;
     ifstream file;
     file.open(instancia);
@@ -341,8 +340,8 @@ vector<pair<int,int>> ACO(string instancia)
 void save(vector<pair<int,int>> c, string instancia,int i)
 {
     ofstream file;
-    string result = "Resultados" + to_string(i) + ".txt";
-    file.open("Resultados.csv");
+    string result = "Resultados/Resultado" + to_string(i) + ".csv";
+    file.open(result);
     file << instancia << ",0,0"<<endl;
     for(int i =0; i< c.size(); i++)
     {
@@ -365,7 +364,23 @@ void conflitos()
 
 int main(int argc, char *argv[])
 {
-    formigas = atoi(argv[1]);
+    formigas = 20;
+
+    iteracoes = 100;
+
+    alpha = 0.7;
+
+    beta = 0.9;
+
+    rho = 0.3;
+
+    C = 20;
+
+    string instancia = "../Instâncias/Mapas/M_30x30B2.txt";
+
+    string Tour_x = "../Instâncias/Tour/10 buscas/Tour_M_30x30B2.txt";
+
+    /*formigas = atoi(argv[1]);
 
     iteracoes = atoi(argv[2]);
 
@@ -377,15 +392,15 @@ int main(int argc, char *argv[])
 
     C = atof(argv[6]);
 
-    string instancia = argv[7];
+    string instancia =argv[7];
 
-    string Tour_x = argv[8];
+    string Tour_x = argv[8];*/
 
     vector<vector<pair<int,int>>> c;
 
     leTour(Tour_x);
-
-    for(int i =0; i < 10; i++)
+    auto beginT = chrono::high_resolution_clock::now();
+    for(int i =0; i < Tour.size(); i++)
     {
         objetivos = Tour[i];
 
@@ -394,24 +409,32 @@ int main(int argc, char *argv[])
 
         objetivos.erase(remove(objetivos.begin(), objetivos.end(), inicio), objetivos.end());
 
+        auto begin = chrono::high_resolution_clock::now();
+
         c.push_back(ACO(instancia));
 
-        objetivos.clear();
-    }
+        auto end = chrono::high_resolution_clock::now();
+        auto elapsed = chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
 
-    cout<<endl;
-    for(int i =0; i < 10; i++)
-    {
+        cout<<"Tempo: "<<elapsed.count() * 1e-9<<" seg" <<endl;
+
         if(c[i].size()>0)
         {
-            cout<<"Execução Terminada!"<<endl<<endl;
-            save(c[i],instancia,i);
+            cout<<"Execução "<<i+1<< " Terminada!"<<endl<<endl;
+            save(c[i],instancia,i+1);
         }
         else
         {
-            cout << "Não foram encontradas rotas!"<<endl<<endl;
+            cout << "Não foram encontradas rotas para "<<i+1<< " !\nReajustes nos parâmetros são necessários"<<endl<<endl;
         }
+
+        objetivos.clear();
     }
+    auto endT = chrono::high_resolution_clock::now();
+    auto elapsedT = chrono::duration_cast<std::chrono::nanoseconds>(endT - beginT);
+
+    cout<<"Tempo total: "<<elapsedT.count() * 1e-9<<" seg" <<endl;
+
 
     return 0;
 }

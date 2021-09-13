@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
-def plot(C,G,h,w):
+def plot(C,G,h,w,ij):
     
     plt.figure(figsize=(10,10))
     
@@ -10,7 +10,7 @@ def plot(C,G,h,w):
 
     plt.plot(x, y,'grey') 
 
-    plt.plot(np.transpose(x), np.transpose(y),'grey') # add this here
+    plt.plot(np.transpose(x), np.transpose(y),'grey')
     
     
     x = [i[0] for i in C]
@@ -36,8 +36,8 @@ def plot(C,G,h,w):
             if G[i][j] == "T":
                 plt.plot(i,j,'ro')
     
-    # plt.savefig(f"../Imagens/G{h}x{w}_Obj{len(obj)}.svg",bbox_inches='tight')
-    plt.savefig("../Imagens/test.png",bbox_inches='tight',dpi=400)
+    plt.savefig(f"../Imagens/G{h}x{w}_Obj{len(obj)}_{ij+1}.svg",bbox_inches='tight')
+    plt.savefig(f"../Imagens/G{h}x{w}_Obj{len(obj)}_{ij+1}png",bbox_inches='tight',dpi=400)
 
 
 def abreInstancia(instancia):
@@ -65,20 +65,32 @@ def abreInstancia(instancia):
     
     return np.array(G), h, w
 
-def openResult():
+def openResult(i):
 
-    df = pd.read_csv("Resultados.csv")
+    try:
+
+        df = pd.read_csv(f"Resultados/Resultado{i+1}.csv")
     
+    except:
+
+        return -1,-1
+
     instancia = df.columns[0]
 
     caminho = df.values
     
     return instancia, caminho
-    
-instancia, caminho = openResult()
 
-G, h, w = abreInstancia(instancia)
 
-print("Plotando Caminho")
-plot(caminho,G,h,w)
-print("Imagem salva em: Imagens/test.png")
+#----------------------------------------------------------
+for i in range(10):
+
+    instancia, caminho = openResult(i)
+
+    if instancia != -1:
+
+        G, h, w = abreInstancia(instancia,i)
+
+        print("Plotando Caminho")
+        plot(caminho,G,h,w)
+        print("Imagem salva em: Imagens/test.png")
